@@ -1,0 +1,18 @@
+{
+	"manifest_version": 3,
+	"name": "Canvas Little Helper",
+	"version": "1.0.0",
+	"description": "Convenient bits of automation for Instructure's Canvas LMS",
+
+	"permissions": [
+		"storage",
+		"webRequest"
+	],
+	"host_permissions": [
+		"https://canvas.nus.edu.sg/"
+	],
+	"background": {
+		"service_worker": "main.js",
+		"type": "module"
+	}
+}
