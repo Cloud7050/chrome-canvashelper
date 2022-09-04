@@ -1,5 +1,5 @@
 /* [Imports] */
-import { KEY_ALL, KEY_DOWNLOADS } from "./constants.js";
+import { KEY_DOWNLOADS } from "./constants.js";
 import { d, getTimestamp } from "./utilities.js";
 
 
@@ -12,9 +12,7 @@ function clearStorage() {
 async function getDownloads(initialiseCourseId = null) {
 	let downloads = (await chrome.storage.sync.get(KEY_DOWNLOADS))?.[KEY_DOWNLOADS] ?? {};
 	if (initialiseCourseId !== null) {
-		downloads[initialiseCourseId] = downloads[initialiseCourseId] ?? {
-			[KEY_ALL]: null
-		};
+		downloads[initialiseCourseId] = downloads[initialiseCourseId] ?? {};
 	}
 	return downloads;
 }
@@ -39,12 +37,4 @@ export async function rememberDownloadFile(courseId, fileId) {
 
 export function rememberDownloadFiles(courseId, fileIds) {
 	for (let fileId of fileIds) rememberDownloadFile(courseId, fileId);
-}
-
-export async function rememberDownloadFolder(courseId, folderId) {
-	//TODO no folder ID, need to compare breadcrumb/URL with sidebar to find a
-	// matching ID, then use newer of current folder or file's timestamp for
-	// each file. BUT, scheduled/hidden files can show up delayed while
-	// backdated, ie we think it's downloaded but it's actually not (bad false
-	// positive)
 }
