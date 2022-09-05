@@ -1,8 +1,9 @@
 /* [Main] */
-//FIXME wait for files to load into DOM, also have a timeout
-//TODO fire marking again after saved download
 (async () => {
-	const { COLOUR_HIGHLIGHT } = await import(
+	const {
+		TAG_PROCESSED,
+		COLOUR_HIGHLIGHT
+	} = await import(
 		chrome.runtime.getURL("./downloadTracker/constants.js")
 	);
 	const {
@@ -20,66 +21,106 @@
 
 
 
-	l("Marking...");
+	function getUnprocessedRows() {
+		let directory = document.querySelector("div.ef-directory");
+		if (directory === null) return null;
+
+		let rows = directory.querySelectorAll("div.ef-item-row");
+		if (rows.length === 0) return null;
+
+		if (rows[0].getAttribute(TAG_PROCESSED) !== null) return null;
+
+		return rows;
+	}
+
+	function observeToMark() {
+		let mutationObserver = new MutationObserver(() => {
+			let rows = getUnprocessedRows();
+			if (rows === null) return;
+
+			mutationObserver.disconnect();
+			l("Done observing, marking...");
+			mark(rows);
+		});
+		mutationObserver.observe(
+			document.body,
+			{
+				subtree: true,
+				childList: true
+			}
+		);
+	}
+
+	function mark(rows) {
+		for (let row of rows) {
+			row.setAttribute(TAG_PROCESSED, "");
+
+			let anchor = row.querySelector("a.ef-name-col__link");
+			if (anchor === null) continue;
+
+			let nameHolder = row.querySelector("span.ef-name-col__text");
+			if (nameHolder === null) return;
+
+			let createdTime = row.querySelector("div.ef-date-created-col time");
+			if (createdTime === null) return;
+
+			let modifiedTime = row.querySelector("div.ef-date-modified-col time");
+			if (modifiedTime === null) continue;
+			let modifiedDate = new Date(
+				modifiedTime.getAttribute("datetime")
+			);
+
+			let link = anchor.href;
+			let fileId = extractFileId(link);
+			if (fileId === -1) {
+				// Likely a folder
+				continue;
+			}
+
+			let isNew = true;
+			let isModified = true;
+			let trackedTimestamp = trackedFileIds[fileId] ?? null;
+			if (trackedTimestamp !== null) {
+				let trackedDate = new Date(trackedTimestamp);
+				isNew = false;
+				isModified = modifiedDate > trackedDate;
+			}
+
+			if (isNew || isModified) {
+				nameHolder.style.color = COLOUR_HIGHLIGHT;
+
+				if (isNew) {
+					createdTime.style.color = COLOUR_HIGHLIGHT;
+
+					nameHolder.style["font-weight"] = "bolder";
+					createdTime.style["font-weight"] = "bolder";
+				} else modifiedTime.style.color = COLOUR_HIGHLIGHT;
+			} else {
+				nameHolder.style.color = null;
+				nameHolder.style["font-weight"] = null;
+
+				createdTime.style.color = null;
+				createdTime.style["font-weight"] = null;
+
+				modifiedTime.style.color = null;
+			}
+		}
+	}
+
+
 
 	let courseId = extractCourseId(window.location.href);
 	if (courseId === -1) return;
 	let downloads = await getDownloads(courseId);
-	let trackedDownloads = downloads[courseId];
+	let trackedFileIds = downloads[courseId];
 
-	let directory = document.querySelector("div.ef-directory");
-	if (directory === null) return;
-
-	let rows = directory.querySelectorAll("div.ef-item-row");
-	for (let row of rows) {
-		let anchor = row.querySelector("a.ef-name-col__link");
-		if (anchor === null) continue;
-
-		let nameHolder = row.querySelector("span.ef-name-col__text");
-		if (nameHolder === null) return;
-
-		let createdTime = row.querySelector("div.ef-date-created-col time");
-		if (createdTime === null) return;
-
-		let modifiedTime = row.querySelector("div.ef-date-modified-col time");
-		if (modifiedTime === null) continue;
-		let modifiedDate = new Date(
-			modifiedTime.getAttribute("datetime")
-		);
-
-		let link = anchor.href;
-		let fileId = extractFileId(link);
-		if (fileId === -1) {
-			// Likely a folder
-			continue;
-		}
-
-		let isNew = true;
-		let isModified = true;
-		let trackedTimestamp = trackedDownloads[fileId] ?? null;
-		if (trackedTimestamp !== null) {
-			let trackedDate = new Date(trackedTimestamp);
-			isNew = false;
-			isModified = modifiedDate > trackedDate;
-		}
-
-		if (isNew || isModified) {
-			nameHolder.style.color = COLOUR_HIGHLIGHT;
-
-			if (isNew) {
-				createdTime.style.color = COLOUR_HIGHLIGHT;
-
-				nameHolder.style["font-weight"] = "bolder";
-				createdTime.style["font-weight"] = "bolder";
-			} else modifiedTime.style.color = COLOUR_HIGHLIGHT;
-		} else {
-			nameHolder.style.color = null;
-			nameHolder.style["font-weight"] = null;
-
-			createdTime.style.color = null;
-			createdTime.style["font-weight"] = null;
-
-			modifiedTime.style.color = null;
-		}
+	let rows = getUnprocessedRows();
+	if (rows === null) {
+		l("Observing to mark...");
+		observeToMark();
+		return;
 	}
+
+	l("Marking now...");
+	mark(rows);
 })();

@@ -52,3 +52,8 @@ export function markCanvasFilePage(tab) {
 	});
 	l(`For course ${courseId}, file page marked`);
 }
+
+export async function markAllTabs() {
+	let tabs = await chrome.tabs.query({});
+	for (let tab of tabs) markCanvasFilePage(tab);
+}

@@ -1,8 +1,8 @@
 /* [Imports] */
 import { ID_FORGET_DOWNLOADS } from "./constants.js";
 import { URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./downloadTracker/constants.js";
-import { extractCourseIdTabless, extractFileId, isCanvasDetails, markCanvasFilePage } from "./downloadTracker/utilities.js";
-import { clearDownloads, rememberDownloadFile } from "./storage.js";
+import { extractCourseIdTabless, extractFileId, isCanvasDetails, markAllTabs, markCanvasFilePage } from "./downloadTracker/utilities.js";
+import { clearDownloads, rememberDownloadFile, rememberDownloadFiles } from "./storage.js";
 import { l } from "./utilities.js";
 
 
@@ -21,7 +21,10 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.contextMenus.onClicked.addListener((info, _tab) => {
 	let id = info.menuItemId;
 
-	if (id === ID_FORGET_DOWNLOADS) clearDownloads();
+	if (id === ID_FORGET_DOWNLOADS) {
+		clearDownloads();
+		markAllTabs();
+	}
 });
 
 // Download Tracker: Single download
@@ -35,7 +38,9 @@ chrome.webRequest.onBeforeRedirect.addListener(
 		let fileId = extractFileId(details.url);
 
 		l(`From course ${courseId}, downloading single file: ${fileId}`);
-		rememberDownloadFile(courseId, fileId);
+		await rememberDownloadFile(courseId, fileId);
+
+		markAllTabs();
 	},
 	{
 		urls: [URL_SINGLE_DOWNLOAD]
@@ -56,12 +61,14 @@ chrome.webRequest.onBeforeRequest.addListener(
 
 		if (fileIds.length !== 0) {
 			l(`From course ${courseId}, downloading files as zip: ${fileIds}`);
-			for (let fileId of fileIds) rememberDownloadFile(courseId, fileId);
+			await rememberDownloadFiles(courseId, fileIds);
 		}
 		if (folderIds !== 0) {
 			l(`From course ${courseId}, downloading folders as zip: ${folderIds}`);
 			//NOTE See TODOs for current limitation
 		}
+
+		markAllTabs();
 	},
 	{
 		urls: [URL_MULTI_DOWNLOAD]
@@ -70,10 +77,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 );
 
 // Download Tracker: Extension start
-(async () => {
-	let tabs = await chrome.tabs.query({});
-	for (let tab of tabs) markCanvasFilePage(tab);
-})();
+markAllTabs();
 
 // Download Tracker: Page load
 chrome.tabs.onUpdated.addListener(

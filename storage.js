@@ -25,11 +25,19 @@ export async function getDownloads(initialiseCourseId = null) {
 	return downloads;
 }
 
-export async function rememberDownloadFile(courseId, fileId) {
+export function rememberDownloadFile(courseId, fileId) {
+	return rememberDownloadFiles(courseId, [fileId]);
+}
+
+export async function rememberDownloadFiles(courseId, fileIds) {
 	let downloads = await getDownloads(courseId);
-	downloads[courseId][fileId] = getTimestamp();
-	setDownloads(downloads);
+	let trackedFileIds = downloads[courseId];
+
+	let timestamp = getTimestamp();
+	for (let fileId of fileIds) trackedFileIds[fileId] = timestamp;
+
 	d(downloads);
+	return setDownloads(downloads);
 }
 
 export function clearDownloads() {
