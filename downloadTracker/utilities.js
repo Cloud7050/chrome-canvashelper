@@ -50,8 +50,8 @@ export function markIfFilesPage(tab, awaitUnprocessed = false) {
 		},
 		files: [
 			awaitUnprocessed
-				? "./downloadTracker/marker-await.js"
-				: "./downloadTracker/marker-no-await.js"
+				? "./downloadTracker/markerAwait.js"
+				: "./downloadTracker/markerNoAwait.js"
 		]
 	});
 	l(`For course ${courseId}, file page marked`);
