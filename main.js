@@ -11,16 +11,15 @@ l("☁️");
 // Single download
 chrome.webRequest.onBeforeRedirect.addListener(
 	async (details) => {
-		d(details);
-
 		if (!isCanvas(details)) return;
+
+		let courseId = await extractCourseId(details.tabId);
+		if (courseId === -1) return;
 
 		let result = REGEX_SINGLE_DOWNLOAD.exec(details.url);
 		let fileId = parseInt(result.groups.id);
 
-		let courseId = await extractCourseId(details.tabId);
-		l(`From course: ${courseId}`);
-		l(`Downloading single file: ${fileId}`);
+		l(`From course ${courseId}, downloading single file: ${fileId}`);
 		rememberDownloadFile(courseId, fileId);
 	},
 	{
@@ -31,23 +30,21 @@ chrome.webRequest.onBeforeRedirect.addListener(
 // Multi download
 chrome.webRequest.onBeforeRequest.addListener(
 	async (details) => {
-		d(details);
-
 		if (!isCanvas(details)) return;
+
+		let courseId = await extractCourseId(details.tabId);
+		if (courseId === -1) return;
 
 		let { formData } = details.requestBody;
 		let fileIds = formData["select[files][]"] ?? [];
 		let folderIds = formData["select[folders][]"] ?? [];
 
-		let courseId = await extractCourseId(details.tabId);
-		l(`From course: ${courseId}`);
-
 		if (fileIds.length !== 0) {
-			l(`Downloading files as zip: ${fileIds}`);
+			l(`From course ${courseId}, downloading files as zip: ${fileIds}`);
 			rememberDownloadFiles(courseId, fileIds);
 		}
 		if (folderIds !== 0) {
-			l(`Downloading folders as zip: ${folderIds}`);
+			l(`From course ${courseId}, downloading folders as zip: ${folderIds}`);
 			//NOTE See TODOs for current limitation
 		}
 	},

@@ -46,8 +46,8 @@ export async function extractCourseId(tabId) {
 	let tab = await chrome.tabs.get(tabId);
 
 	let result = REGEX_COURSE_ID.exec(tab.url);
-	//FIXME file download from non-course, like personal files or course via
-	// personal files, will crash due to URL
+	if (result === null) return -1;
+
 	return parseInt(result.groups.id);
 }
 
