@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Canvas Little Helper",
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"description": "Convenient bits of automation for Instructure's Canvas LMS",
 	"icons": {
 		"16": "/icons/16.png",
