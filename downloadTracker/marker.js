@@ -2,7 +2,7 @@
 //FIXME wait for files to load into DOM, also have a timeout
 //TODO fire marking again after saved download
 (async () => {
-	const { ORANGE } = await import(
+	const { COLOUR_HIGHLIGHT } = await import(
 		chrome.runtime.getURL("./downloadTracker/constants.js")
 	);
 	const {
@@ -64,14 +64,14 @@
 		}
 
 		if (isNew || isModified) {
-			nameHolder.style.color = ORANGE;
+			nameHolder.style.color = COLOUR_HIGHLIGHT;
 
 			if (isNew) {
-				createdTime.style.color = ORANGE;
+				createdTime.style.color = COLOUR_HIGHLIGHT;
 
 				nameHolder.style["font-weight"] = "bolder";
 				createdTime.style["font-weight"] = "bolder";
-			} else modifiedTime.style.color = ORANGE;
+			} else modifiedTime.style.color = COLOUR_HIGHLIGHT;
 		} else {
 			nameHolder.style.color = null;
 			nameHolder.style["font-weight"] = null;
