@@ -16,7 +16,7 @@ export async function mark(awaitUnprocessed) {
 		chrome.runtime.getURL("./utilities.js")
 	);
 	const { getDownloads } = await import(
-		chrome.runtime.getURL("./storage.js")
+		chrome.runtime.getURL("./downloadTracker/storage.js")
 	);
 
 

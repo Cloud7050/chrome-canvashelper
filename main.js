@@ -1,20 +1,14 @@
 /* [Imports] */
 import { ID_FORGET_DOWNLOADS } from "./constants.js";
 import { URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./downloadTracker/constants.js";
+import { clearDownloads, rememberDownloadFile, rememberDownloadFiles } from "./downloadTracker/storage.js";
 import { extractCourseIdTabless, extractFileId, isCanvasDetails, markAllTabs, markIfFilesPage } from "./downloadTracker/utilities.js";
-import { clearDownloads, rememberDownloadFile, rememberDownloadFiles } from "./storage.js";
 import { l } from "./utilities.js";
 
 
 
 /* [Main] */
 l("☁️");
-
-// Dev mode
-// chrome.runtime.onInstalled.addListener(async () => {
-// 	let extensionInfo = await chrome.management.getSelf();
-// 	let isDev = extensionInfo.installType === "development";
-// });
 
 // Download Tracker: Context menus
 chrome.runtime.onInstalled.addListener(() => {

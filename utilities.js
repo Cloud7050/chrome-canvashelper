@@ -32,3 +32,8 @@ export function d(content) {
 			: `*** ${content}`
 	);
 }
+
+export function isDevMode() {
+	let manifest = chrome.runtime.getManifest();
+	return manifest.update_url === undefined;
+}
