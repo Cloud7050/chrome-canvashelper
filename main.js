@@ -2,8 +2,8 @@
 import { ID_FORGET_DOWNLOADS } from "./constants.js";
 import { URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./downloadTracker/constants.js";
 import { clearDownloads, rememberDownloadFile, rememberDownloadFiles } from "./downloadTracker/storage.js";
-import { extractCourseIdTabless, extractFileId, isCanvasDetails, markAllTabs, markIfFilesPage } from "./downloadTracker/utilities.js";
-import { l } from "./utilities.js";
+import { extractCourseId, extractFileId, isCanvas, markAllTabs, markIfFilesPage } from "./downloadTracker/utilities.js";
+import { d, l } from "./utilities.js";
 
 
 
@@ -31,9 +31,9 @@ chrome.contextMenus.onClicked.addListener(async (info, _tab) => {
 // Download Tracker: Single download
 chrome.webRequest.onBeforeRedirect.addListener(
 	async (details) => {
-		if (!isCanvasDetails(details)) return;
+		if (!isCanvas(details.initiator)) return;
 
-		let courseId = await extractCourseIdTabless(details.tabId);
+		let courseId = await extractCourseId(details.tabId);
 		if (courseId === -1) return;
 
 		let fileId = extractFileId(details.url);
@@ -51,9 +51,9 @@ chrome.webRequest.onBeforeRedirect.addListener(
 // Download Tracker: Multi download
 chrome.webRequest.onBeforeRequest.addListener(
 	async (details) => {
-		if (!isCanvasDetails(details)) return;
+		if (!isCanvas(details.initiator)) return;
 
-		let courseId = await extractCourseIdTabless(details.tabId);
+		let courseId = await extractCourseId(details.tabId);
 		if (courseId === -1) return;
 
 		let { formData } = details.requestBody;
@@ -80,14 +80,31 @@ chrome.webRequest.onBeforeRequest.addListener(
 // Download Tracker: Extension start
 markAllTabs();
 
-// Download Tracker: Page load
+// Download Tracker: Page change
 chrome.tabs.onUpdated.addListener(
 	(tabId, changeInfo, tab) => {
-		// Limitation: Clicking the same folder appears the same as a full page refresh. The former
-		// doesn't wipe formatting but the latter does and requires re-processing. Therefore the
-		// former will needlessly start observing
-		if (changeInfo.status !== "complete") return;
+		if (changeInfo.url === undefined) return;
 
+		d("Tab link changed");
+		// Tab link changed immediately. This may or may not involve web navigation.
+		// • If it doesn't (eg clicking a folder in the sidebar, back/forward cache), marking only
+		// fires here
+		// • If it does (eg clicking a folder row, entering a different link), marking will also
+		// fire in chrome.webNavigation at around the same time
+
+		// There is a delay after the link changes, before the rows actually get replaced. Need to
+		// ignore processed rows, and wait to mark only unprocessed ones
 		markIfFilesPage(tab, true);
+	}
+);
+
+chrome.webNavigation.onDOMContentLoaded.addListener(
+	(details) => {
+		if (details.frameType !== "outermost_frame") return;
+
+		d("DOM completed load");
+		// This fires without chrome.tabs firing, eg when refreshing, entering the same link
+
+		markIfFilesPage(details.tabId);
 	}
 );

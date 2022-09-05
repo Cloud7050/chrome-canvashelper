@@ -37,3 +37,16 @@ export function isDevMode() {
 	let manifest = chrome.runtime.getManifest();
 	return manifest.update_url === undefined;
 }
+
+export function getTab(tabOrId) {
+	if (!Number.isInteger(tabOrId)) return tabOrId;
+
+	return chrome.tabs.get(tabOrId);
+}
+
+export async function getLink(linkOrTabId) {
+	if (!Number.isInteger(linkOrTabId)) return linkOrTabId;
+
+	let tab = await chrome.tabs.get(linkOrTabId);
+	return tab.url;
+}

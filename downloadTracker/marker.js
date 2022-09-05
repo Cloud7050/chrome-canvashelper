@@ -26,11 +26,15 @@ export async function mark(awaitUnprocessed) {
 		let directory = document.querySelector("div.ef-directory");
 		if (directory === null) return null;
 
-		let rows = directory.querySelectorAll("div.ef-item-row");
-		if (rows.length === 0) {
-			// Limitation: An actually empty folder is thought to still be loading its files
+		let header = directory.querySelector("header.ef-directory-header");
+		if (header === null) {
+			// Rows are not done loading.
+			// Assumption: An empty folder will still have the header
 			return null;
 		}
+
+		let rows = directory.querySelectorAll("div.ef-item-row");
+		if (rows.length === 0) return [];
 
 		if (
 			awaitUnprocessed
@@ -136,7 +140,7 @@ export async function mark(awaitUnprocessed) {
 
 
 
-	let courseId = extractCourseId(window.location.href);
+	let courseId = await extractCourseId(window.location.href);
 	if (courseId === -1) return;
 
 	let rows = getRows();
