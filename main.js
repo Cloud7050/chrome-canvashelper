@@ -83,6 +83,11 @@ markAllTabs();
 // Download Tracker: Page load
 chrome.tabs.onUpdated.addListener(
 	(tabId, changeInfo, tab) => {
+		// Limitation: Clicking the same folder appears the same as a full page refresh. The former
+		// doesn't wipe formatting but the latter does and requires re-processing. Therefore the
+		// former needlessly stacks observers, then they all apply at once if moving to another
+		// folder without a page refresh. Hard to inject just once without access to the DOM to
+		// decide in the first place, could tackle using global variable
 		if (changeInfo.status !== "complete") return;
 
 		markIfFilesPage(tab, true);

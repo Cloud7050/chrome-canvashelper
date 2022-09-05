@@ -27,8 +27,7 @@ export async function mark(awaitUnprocessed) {
 
 		let rows = directory.querySelectorAll("div.ef-item-row");
 		if (rows.length === 0) {
-			// Limitation: An actually empty folder  is thought to still be
-			// loading its files
+			// Limitation: An actually empty folder is thought to still be loading its files
 			return null;
 		}
 
