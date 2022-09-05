@@ -11,3 +11,4 @@ export const KEY_DOWNLOADS_DEV = "downloadsDev";
 
 export const TAG_PROCESSED = "tag-processed";
 export const COLOUR_HIGHLIGHT = "var(--ic-brand-global-nav-menu-item__text-color--active)"; // Orange for NUS
+export const COLOUR_DULL = "var(--fOyUs-color)"; // Greyish

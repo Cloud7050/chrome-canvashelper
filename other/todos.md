@@ -2,6 +2,7 @@
 
 ## Short-Term TODOs
 
+- chrome.webNavigation (potential flexibility for limitation, workaround for inactive service worker bug)
 - Mark current folder as part of popup, context-dependent
 - Confirmation to delete all
 - Set up dynamic Canvas URL

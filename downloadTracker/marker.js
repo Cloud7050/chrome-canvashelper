@@ -2,7 +2,8 @@
 export async function mark(awaitUnprocessed) {
 	const {
 		TAG_PROCESSED,
-		COLOUR_HIGHLIGHT
+		COLOUR_HIGHLIGHT,
+		COLOUR_DULL
 	} = await import(
 		chrome.runtime.getURL("./downloadTracker/constants.js")
 	);
@@ -64,6 +65,10 @@ export async function mark(awaitUnprocessed) {
 	}
 
 	async function markNow(courseId, rows) {
+		function resetStyle(element) {
+			element.style = null;
+		}
+
 		if (globalThis.mutationObserver !== undefined) {
 			globalThis.mutationObserver.disconnect();
 			delete globalThis.mutationObserver;
@@ -106,14 +111,9 @@ export async function mark(awaitUnprocessed) {
 				isModified = modifiedDate > trackedDate;
 			}
 
-			// Reset styles
-			nameHolder.style.color = null;
-			nameHolder.style["font-weight"] = null;
-
-			createdTime.style.color = null;
-			createdTime.style["font-weight"] = null;
-
-			modifiedTime.style.color = null;
+			resetStyle(nameHolder);
+			resetStyle(createdTime);
+			resetStyle(modifiedTime);
 
 			if (isNew || isModified) {
 				nameHolder.style.color = COLOUR_HIGHLIGHT;
@@ -124,6 +124,12 @@ export async function mark(awaitUnprocessed) {
 					nameHolder.style["font-weight"] = "bolder";
 					createdTime.style["font-weight"] = "bolder";
 				} else modifiedTime.style.color = COLOUR_HIGHLIGHT;
+			} else {
+				nameHolder.style.color = COLOUR_DULL;
+				nameHolder.style["font-style"] = "italic";
+
+				modifiedTime.style.color = COLOUR_DULL;
+				modifiedTime.style["font-style"] = "italic";
 			}
 		}
 	}
