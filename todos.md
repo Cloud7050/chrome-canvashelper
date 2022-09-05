@@ -1,8 +1,5 @@
 # Download Tracker
 
-- Mark current folder as downloaded (active tab)
-- Icons in multiple locations
-
 - Set up dynamic Canvas URL
 - Mark current folder as part of popup, context-dependent
 - Downloaded folders' contents are unknown, only have the folder ID. Need to query the API to get the file IDs at the time of download, and recurse for any further folder IDs within
