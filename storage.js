@@ -1,15 +1,21 @@
 /* [Imports] */
-import { KEY_DOWNLOADS } from "./constants.js";
+import { KEY_DOWNLOADS, KEY_DOWNLOADS_DEV } from "./constants.js";
 import { getTimestamp } from "./downloadTracker/utilities.js";
-import { d } from "./utilities.js";
+import { d, l } from "./utilities.js";
 
 
 
 /* [Main] */
-function setDownloads(downloads) {
+async function getKey() {
+	let extensionInfo = await chrome.management.getSelf();
+	let isDev = extensionInfo.installType === "development";
+	return isDev ? KEY_DOWNLOADS_DEV : KEY_DOWNLOADS;
+}
+
+async function setDownloads(downloads) {
 	chrome.storage.sync.set(
 		{
-			[KEY_DOWNLOADS]: downloads
+			[await getKey()]: downloads
 		}
 	);
 }
@@ -17,11 +23,19 @@ function setDownloads(downloads) {
 
 
 /* [Exports] */
+export function clearStorage() {
+	return chrome.storage.sync.clear();
+}
+
 export async function getDownloads(initialiseCourseId = null) {
-	let downloads = (await chrome.storage.sync.get(KEY_DOWNLOADS))?.[KEY_DOWNLOADS] ?? {};
+	let key = getKey();
+	let result = await chrome.storage.sync.get(key);
+
+	let downloads = result?.[key] ?? {};
 	if (initialiseCourseId !== null) {
 		downloads[initialiseCourseId] = downloads[initialiseCourseId] ?? {};
 	}
+
 	return downloads;
 }
 
@@ -40,10 +54,8 @@ export async function rememberDownloadFiles(courseId, fileIds) {
 	return setDownloads(downloads);
 }
 
-export function clearDownloads() {
-	return chrome.storage.sync.remove(KEY_DOWNLOADS);
-}
-
-export function clearStorage() {
-	return chrome.storage.sync.clear();
+export async function clearDownloads() {
+	return chrome.storage.sync.remove(
+		await getKey()
+	);
 }

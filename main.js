@@ -10,6 +10,12 @@ import { l } from "./utilities.js";
 /* [Main] */
 l("☁️");
 
+// Dev mode
+// chrome.runtime.onInstalled.addListener(async () => {
+// 	let extensionInfo = await chrome.management.getSelf();
+// 	let isDev = extensionInfo.installType === "development";
+// });
+
 // Download Tracker: Context menus
 chrome.runtime.onInstalled.addListener(() => {
 	chrome.contextMenus.create({
