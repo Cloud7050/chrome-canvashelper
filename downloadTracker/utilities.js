@@ -38,7 +38,7 @@ export function getTimestamp() {
 		.toISOString();
 }
 
-export function markCanvasFilePage(tab) {
+export function markIfFilesPage(tab, awaitUnprocessed = false) {
 	if (!isCanvas(tab.url)) return;
 
 	let courseId = extractCourseId(tab.url);
@@ -48,12 +48,16 @@ export function markCanvasFilePage(tab) {
 		target: {
 			tabId: tab.id
 		},
-		files: ["./downloadTracker/marker.js"]
+		files: [
+			awaitUnprocessed
+				? "./downloadTracker/marker-await.js"
+				: "./downloadTracker/marker-no-await.js"
+		]
 	});
 	l(`For course ${courseId}, file page marked`);
 }
 
 export async function markAllTabs() {
 	let tabs = await chrome.tabs.query({});
-	for (let tab of tabs) markCanvasFilePage(tab);
+	for (let tab of tabs) markIfFilesPage(tab);
 }

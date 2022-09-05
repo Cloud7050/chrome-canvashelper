@@ -1,5 +1,5 @@
-/* [Main] */
-(async () => {
+/* [Exports] */
+export async function mark(awaitUnprocessed) {
 	const {
 		TAG_PROCESSED,
 		COLOUR_HIGHLIGHT
@@ -21,26 +21,33 @@
 
 
 
-	function getUnprocessedRows() {
+	function getRows() {
 		let directory = document.querySelector("div.ef-directory");
 		if (directory === null) return null;
 
 		let rows = directory.querySelectorAll("div.ef-item-row");
-		if (rows.length === 0) return null;
+		if (rows.length === 0) {
+			// Limitation: An actually empty folder  is thought to still be
+			// loading its files
+			return null;
+		}
 
-		if (rows[0].getAttribute(TAG_PROCESSED) !== null) return null;
+		if (
+			awaitUnprocessed
+			&& rows[0].getAttribute(TAG_PROCESSED) !== null
+		) return null;
 
 		return rows;
 	}
 
-	function observeToMark() {
+	function observeToMark(courseId) {
 		let mutationObserver = new MutationObserver(() => {
-			let rows = getUnprocessedRows();
+			let rows = getRows();
 			if (rows === null) return;
 
 			mutationObserver.disconnect();
 			l("Done observing, marking...");
-			mark(rows);
+			markNow(courseId, rows);
 		});
 		mutationObserver.observe(
 			document.body,
@@ -51,7 +58,10 @@
 		);
 	}
 
-	function mark(rows) {
+	async function markNow(courseId, rows) {
+		let downloads = await getDownloads(courseId);
+		let trackedFileIds = downloads[courseId];
+
 		for (let row of rows) {
 			row.setAttribute(TAG_PROCESSED, "");
 
@@ -86,6 +96,15 @@
 				isModified = modifiedDate > trackedDate;
 			}
 
+			// Reset styles
+			nameHolder.style.color = null;
+			nameHolder.style["font-weight"] = null;
+
+			createdTime.style.color = null;
+			createdTime.style["font-weight"] = null;
+
+			modifiedTime.style.color = null;
+
 			if (isNew || isModified) {
 				nameHolder.style.color = COLOUR_HIGHLIGHT;
 
@@ -95,14 +114,6 @@
 					nameHolder.style["font-weight"] = "bolder";
 					createdTime.style["font-weight"] = "bolder";
 				} else modifiedTime.style.color = COLOUR_HIGHLIGHT;
-			} else {
-				nameHolder.style.color = null;
-				nameHolder.style["font-weight"] = null;
-
-				createdTime.style.color = null;
-				createdTime.style["font-weight"] = null;
-
-				modifiedTime.style.color = null;
 			}
 		}
 	}
@@ -111,16 +122,14 @@
 
 	let courseId = extractCourseId(window.location.href);
 	if (courseId === -1) return;
-	let downloads = await getDownloads(courseId);
-	let trackedFileIds = downloads[courseId];
 
-	let rows = getUnprocessedRows();
+	let rows = getRows();
 	if (rows === null) {
 		l("Observing to mark...");
-		observeToMark();
+		observeToMark(courseId);
 		return;
 	}
 
 	l("Marking now...");
-	mark(rows);
-})();
+	markNow(courseId, rows);
+}

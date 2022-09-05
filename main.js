@@ -1,7 +1,7 @@
 /* [Imports] */
 import { ID_FORGET_DOWNLOADS } from "./constants.js";
 import { URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./downloadTracker/constants.js";
-import { extractCourseIdTabless, extractFileId, isCanvasDetails, markAllTabs, markCanvasFilePage } from "./downloadTracker/utilities.js";
+import { extractCourseIdTabless, extractFileId, isCanvasDetails, markAllTabs, markIfFilesPage } from "./downloadTracker/utilities.js";
 import { clearDownloads, rememberDownloadFile, rememberDownloadFiles } from "./storage.js";
 import { l } from "./utilities.js";
 
@@ -18,11 +18,12 @@ chrome.runtime.onInstalled.addListener(() => {
 		contexts: ["action"]
 	});
 });
-chrome.contextMenus.onClicked.addListener((info, _tab) => {
+chrome.contextMenus.onClicked.addListener(async (info, _tab) => {
 	let id = info.menuItemId;
 
 	if (id === ID_FORGET_DOWNLOADS) {
-		clearDownloads();
+		await clearDownloads();
+
 		markAllTabs();
 	}
 });
@@ -84,6 +85,6 @@ chrome.tabs.onUpdated.addListener(
 	(tabId, changeInfo, tab) => {
 		if (changeInfo.status !== "complete") return;
 
-		markCanvasFilePage(tab);
+		markIfFilesPage(tab, true);
 	}
 );

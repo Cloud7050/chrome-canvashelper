@@ -1,6 +1,5 @@
 # Download Tracker
 
-- Differentiate when should ignore processed to await unprocessed rows
 - Ignore same URL completions
 - Mark current folder as downloaded button (context only option)
 - Icons in multiple locations
