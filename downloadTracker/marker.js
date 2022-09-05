@@ -40,11 +40,16 @@ export async function mark(awaitUnprocessed) {
 	}
 
 	function observeToMark(courseId) {
+		if (globalThis.mutationObserver !== undefined) {
+			l("Already observing");
+			return;
+		}
+
+		l("Observing to mark...");
 		let mutationObserver = new MutationObserver(() => {
 			let rows = getRows();
 			if (rows === null) return;
 
-			mutationObserver.disconnect();
 			l("Done observing, marking...");
 			markNow(courseId, rows);
 		});
@@ -55,9 +60,15 @@ export async function mark(awaitUnprocessed) {
 				childList: true
 			}
 		);
+		globalThis.mutationObserver = mutationObserver;
 	}
 
 	async function markNow(courseId, rows) {
+		if (globalThis.mutationObserver !== undefined) {
+			globalThis.mutationObserver.disconnect();
+			delete globalThis.mutationObserver;
+		}
+
 		let downloads = await getDownloads(courseId);
 		let trackedFileIds = downloads[courseId];
 
@@ -124,7 +135,6 @@ export async function mark(awaitUnprocessed) {
 
 	let rows = getRows();
 	if (rows === null) {
-		l("Observing to mark...");
 		observeToMark(courseId);
 		return;
 	}
