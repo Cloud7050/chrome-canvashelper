@@ -5,6 +5,7 @@
 	"description": "Convenient bits of automation for Instructure's Canvas LMS",
 
 	"permissions": [
+		"contextMenus",
 		"scripting",
 		"storage",
 		"tabs",
@@ -16,5 +17,11 @@
 	"background": {
 		"service_worker": "./main.js",
 		"type": "module"
-	}
+	},
+	"web_accessible_resources": [
+		{
+			"resources": ["*.js"],
+			"matches": ["https://*/*"]
+		}
+	]
 }
