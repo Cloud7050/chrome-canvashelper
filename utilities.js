@@ -1,8 +1,3 @@
-/* [Imports] */
-import { REGEX_CANVAS, REGEX_COURSE_ID } from "./constants.js";
-
-
-
 /* [Exports] */
 export function l(content, group = false) {
 	let consoleFunction = (!group) ? console.log : console.group;
@@ -36,22 +31,4 @@ export function d(content) {
 			? content
 			: `*** ${content}`
 	);
-}
-
-export function isCanvas(details) {
-	return REGEX_CANVAS.test(details.initiator);
-}
-
-export async function extractCourseId(tabId) {
-	let tab = await chrome.tabs.get(tabId);
-
-	let result = REGEX_COURSE_ID.exec(tab.url);
-	if (result === null) return -1;
-
-	return parseInt(result.groups.id);
-}
-
-export function getTimestamp() {
-	return (new Date())
-		.toISOString();
 }

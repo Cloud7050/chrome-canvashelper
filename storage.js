@@ -1,6 +1,7 @@
 /* [Imports] */
-import { KEY_DOWNLOADS } from "./constants.js";
-import { d, getTimestamp } from "./utilities.js";
+import { KEY_DOWNLOADS } from "./downloadTracker/constants.js";
+import { getTimestamp } from "./downloadTracker/utilities.js";
+import { d } from "./utilities.js";
 
 
 
@@ -33,8 +34,4 @@ export async function rememberDownloadFile(courseId, fileId) {
 	downloads[courseId][fileId] = getTimestamp();
 	setDownloads(downloads);
 	d(downloads);
-}
-
-export function rememberDownloadFiles(courseId, fileIds) {
-	for (let fileId of fileIds) rememberDownloadFile(courseId, fileId);
 }

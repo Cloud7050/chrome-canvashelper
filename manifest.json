@@ -5,14 +5,16 @@
 	"description": "Convenient bits of automation for Instructure's Canvas LMS",
 
 	"permissions": [
+		"scripting",
 		"storage",
+		"tabs",
 		"webRequest"
 	],
 	"host_permissions": [
-		"https://canvas.nus.edu.sg/"
+		"https://*/"
 	],
 	"background": {
-		"service_worker": "main.js",
+		"service_worker": "./main.js",
 		"type": "module"
 	}
 }

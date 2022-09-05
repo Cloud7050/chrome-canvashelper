@@ -1,19 +1,20 @@
 /* [Imports] */
-import { REGEX_SINGLE_DOWNLOAD, URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./constants.js";
-import { rememberDownloadFile, rememberDownloadFiles } from "./storage.js";
-import { d, extractCourseId, isCanvas, l } from "./utilities.js";
+import { REGEX_SINGLE_DOWNLOAD, URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./downloadTracker/constants.js";
+import { extractCourseIdTabless, isCanvasDetails, markCanvasFilePage } from "./downloadTracker/utilities.js";
+import { rememberDownloadFile } from "./storage.js";
+import { l } from "./utilities.js";
 
 
 
 /* [Main] */
 l("☁️");
 
-// Single download
+// Download Tracker: Single download
 chrome.webRequest.onBeforeRedirect.addListener(
 	async (details) => {
-		if (!isCanvas(details)) return;
+		if (!isCanvasDetails(details)) return;
 
-		let courseId = await extractCourseId(details.tabId);
+		let courseId = await extractCourseIdTabless(details.tabId);
 		if (courseId === -1) return;
 
 		let result = REGEX_SINGLE_DOWNLOAD.exec(details.url);
@@ -27,12 +28,12 @@ chrome.webRequest.onBeforeRedirect.addListener(
 	}
 );
 
-// Multi download
+// Download Tracker: Multi download
 chrome.webRequest.onBeforeRequest.addListener(
 	async (details) => {
-		if (!isCanvas(details)) return;
+		if (!isCanvasDetails(details)) return;
 
-		let courseId = await extractCourseId(details.tabId);
+		let courseId = await extractCourseIdTabless(details.tabId);
 		if (courseId === -1) return;
 
 		let { formData } = details.requestBody;
@@ -41,7 +42,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 
 		if (fileIds.length !== 0) {
 			l(`From course ${courseId}, downloading files as zip: ${fileIds}`);
-			rememberDownloadFiles(courseId, fileIds);
+			for (let fileId of fileIds) rememberDownloadFile(courseId, fileId);
 		}
 		if (folderIds !== 0) {
 			l(`From course ${courseId}, downloading folders as zip: ${folderIds}`);
@@ -54,13 +55,17 @@ chrome.webRequest.onBeforeRequest.addListener(
 	["requestBody"]
 );
 
-// Folder navigation
-// chrome.tabs.onUpdated.addListener(
-// 	(tabId, changeInfo, _tab) => {
-// 		console.log(changeInfo);
-// 		console.log(_tab);
-// 		if (changeInfo.url === undefined) return;
+// Download Tracker: Page load
+chrome.tabs.onUpdated.addListener(
+	(tabId, changeInfo, tab) => {
+		if (changeInfo.status !== "complete") return;
 
-// 		console.log(changeInfo.url);
-// 	}
-// );
+		markCanvasFilePage(tab);
+	}
+);
+
+// Download Tracker: Extension start
+(async () => {
+	let tabs = await chrome.tabs.query({});
+	for (let tab of tabs) markCanvasFilePage(tab);
+})();
