@@ -1,8 +1,10 @@
 /* [Imports] */
-import { URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./downloadTracker/constants.js";
+import { URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./constants.js";
 import { rememberDownloadFile, rememberDownloadFiles } from "./downloadTracker/storage.js";
-import { extractCourseId, extractFileId, isCanvas, markAllTabs, markIfFilesPage } from "./downloadTracker/utilities.js";
-import { d, l, refreshBadge } from "./utilities.js";
+import { markAllTabs, markIfFilesPage } from "./downloadTracker/utilities.js";
+import { d, l } from "./logging.js";
+import { extractCourseId, extractFileId, isCanvas } from "./recogniser.js";
+import { refreshBadge } from "./utilities.js";
 
 
 

@@ -4,7 +4,7 @@
 
 - Mark current folder as part of popup, context-dependent
 - Set up dynamic Canvas URL
-- Context menu in multiple appropriate places with similar options as popup. Refactor with page checker utils, context menu class + context menu manager
+- Context menu in multiple appropriate places with similar options as popup. Context menu class + context menu manager
 
 ## Ideas
 

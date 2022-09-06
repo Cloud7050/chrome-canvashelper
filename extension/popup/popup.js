@@ -49,8 +49,8 @@ function Popup() {
     className: "form-check-label"
   }, "Switch to dev storage"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
     "data-bs-target": isDevStorage ? null : "#clearDownloadsModal",
-    className: "btn btn-danger btn-sm",
     "data-bs-toggle": isDevStorage ? null : "modal",
+    className: "btn btn-danger btn-sm",
     onClick: isDevStorage ? clearDownloadsClick : null
   }, "Clear Tracked Downloads"))), /*#__PURE__*/React.createElement("div", {
     id: "clearDownloadsModal",

@@ -63,8 +63,8 @@ function Popup() {
 			<div>
 				<button
 					data-bs-target={isDevStorage ? null : "#clearDownloadsModal"}
-					className="btn btn-danger btn-sm"
 					data-bs-toggle={isDevStorage ? null : "modal"}
+					className="btn btn-danger btn-sm"
 
 					onClick={isDevStorage ? clearDownloadsClick : null}
 				>

@@ -1,8 +1,7 @@
 /* [Imports] */
-import { KEY_DEV_STORAGE } from "../constants.js";
+import { KEY_DEV_STORAGE, KEY_DOWNLOADS, KEY_DOWNLOADS_DEV } from "../constants.js";
+import { d } from "../logging.js";
 import { clear, get, set } from "../storageSync.js";
-import { d } from "../utilities.js";
-import { KEY_DOWNLOADS, KEY_DOWNLOADS_DEV } from "./constants.js";
 import { getTimestamp } from "./utilities.js";
 
 

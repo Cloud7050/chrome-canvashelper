@@ -2,24 +2,26 @@ import { FileStatus } from "./constants.js";
 
 /* [Exports] */
 export async function mark(awaitUnprocessed) {
+	const { TAG_PROCESSED } = await import(
+		chrome.runtime.getURL("./downloadTracker/constants.js")
+	);
+	const { getDownloads } = await import(
+		chrome.runtime.getURL("./downloadTracker/storage.js")
+	);
 	const {
-		TAG_PROCESSED,
 		COLOUR_HIGHLIGHT,
 		COLOUR_DULL
 	} = await import(
-		chrome.runtime.getURL("./downloadTracker/constants.js")
+		chrome.runtime.getURL("../constants.js")
+	);
+	const { l } = await import(
+		chrome.runtime.getURL("./logging.js")
 	);
 	const {
 		extractCourseId,
 		extractFileId
 	} = await import(
-		chrome.runtime.getURL("./downloadTracker/utilities.js")
-	);
-	const { l, d } = await import(
-		chrome.runtime.getURL("./utilities.js")
-	);
-	const { getDownloads } = await import(
-		chrome.runtime.getURL("./downloadTracker/storage.js")
+		chrome.runtime.getURL("../recogniser.js")
 	);
 
 
