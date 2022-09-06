@@ -1,0 +1,10 @@
+{
+	"scripts": {
+		"start": "npx babel --watch ./extension/ --out-dir ./extension/"
+	},
+	"devDependencies": {
+		"@babel/cli": "7.18.10",
+		"@babel/core": "7.19.0",
+		"@babel/plugin-transform-react-jsx": "7.19.0"
+	}
+}
