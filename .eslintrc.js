@@ -16,7 +16,7 @@ module.exports = {
 		{
 			"files": ["*.jsx"],
 
-			"extends": ["plugin:react/recommended"]
+			"extends": ["./.eslintrc.react.js"]
 		}
 	]
 };
