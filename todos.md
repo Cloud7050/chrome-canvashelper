@@ -2,9 +2,9 @@
 
 ## Short-Term TODOs
 
+- Context menu in multiple appropriate places with similar options as popup. Context menu class + context menu manager
 - Mark current folder as part of popup, context-dependent
 - Set up dynamic Canvas URL
-- Context menu in multiple appropriate places with similar options as popup. Context menu class + context menu manager
 
 ## Ideas
 

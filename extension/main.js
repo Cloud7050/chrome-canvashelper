@@ -3,6 +3,7 @@ import { URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./constants.js";
 import { rememberDownloadFile, rememberDownloadFiles } from "./downloadTracker/storage.js";
 import { markAllTabs, markIfFilesPage } from "./downloadTracker/utilities.js";
 import { d, l } from "./logging.js";
+import { checkAllTabs, checkForQuiz } from "./quizTransferer/utilities.js";
 import { extractCourseId, extractFileId, isCanvas } from "./recogniser.js";
 import { refreshBadge } from "./utilities.js";
 
@@ -14,6 +15,9 @@ refreshBadge();
 
 // Download Tracker: Extension start
 markAllTabs();
+
+// Quiz Transferer: Extension start
+checkAllTabs();
 
 // Download Tracker: Single download
 chrome.webRequest.onBeforeRedirect.addListener(
@@ -79,6 +83,8 @@ chrome.tabs.onUpdated.addListener(
 		// There is a delay after the link changes, before the rows actually get replaced. Need to
 		// ignore processed rows, and wait to mark only unprocessed ones
 		markIfFilesPage(tab, true);
+
+		checkForQuiz(tab);
 	}
 );
 chrome.webNavigation.onDOMContentLoaded.addListener(

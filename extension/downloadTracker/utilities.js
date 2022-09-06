@@ -12,12 +12,11 @@ export function getTimestamp() {
 }
 
 export async function markIfFilesPage(tabOrId, awaitUnprocessed = false) {
-	let result = isFilesPage(tabOrId);
-	if (!result) return;
+	let isRelevant = await isFilesPage(tabOrId);
+	if (!isRelevant) return;
 
 	let tab = await getTab(tabOrId);
 	let courseId = await extractCourseId(tab.url);
-	if (courseId === -1) return;
 
 	chrome.scripting.executeScript({
 		target: {

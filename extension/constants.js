@@ -16,8 +16,9 @@ export const COLOUR_DULL = "var(--fOyUs-color)"; // Greyish
 export const DOMAIN_NAME = "canvas.nus.edu.sg";
 export const REGEX_CANVAS = new RegExp(`https://${DOMAIN_NAME}`, "u");
 
-export const REGEX_COURSE_ID = /.+\/courses\/(?<id>\d+)\/files.*/u;
-export const REGEX_FILE_ID = /.+\/files\/(?<id>\d+)\/download.*/u;
+export const REGEX_COURSE_ID = /^.+\/courses\/(?<id>\d+)\/files.*$/u;
+export const REGEX_FILE_ID = /^.+\/files\/(?<id>\d+)\/download.*$/u;
+export const REGEX_QUIZ_ID = /^.+\/courses\/\d+\/quizzes\/(?<id>\d+)$/u;
 
 // [Other]
 export const URL_SINGLE_DOWNLOAD = "https://*/files/*/download*";
