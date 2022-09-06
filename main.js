@@ -79,7 +79,6 @@ chrome.tabs.onUpdated.addListener(
 		markIfFilesPage(tab, true);
 	}
 );
-
 chrome.webNavigation.onDOMContentLoaded.addListener(
 	(details) => {
 		if (details.frameType !== "outermost_frame") return;
