@@ -1,6 +1,6 @@
 /* [Imports] */
 import { REGEX_CANVAS } from "../constants.js";
-import { e, getLink, getTab, l } from "../utilities.js";
+import { getLink, getTab, l } from "../utilities.js";
 import { REGEX_COURSE_ID, REGEX_SINGLE_DOWNLOAD } from "./constants.js";
 
 

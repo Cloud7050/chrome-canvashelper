@@ -1,3 +1,5 @@
+import { FileStatus } from "./constants.js";
+
 /* [Exports] */
 export async function mark(awaitUnprocessed) {
 	const {
@@ -95,9 +97,6 @@ export async function mark(awaitUnprocessed) {
 
 			let modifiedTime = row.querySelector("div.ef-date-modified-col time");
 			if (modifiedTime === null) continue;
-			let modifiedDate = new Date(
-				modifiedTime.getAttribute("datetime")
-			);
 
 			let link = anchor.href;
 			let fileId = extractFileId(link);
@@ -106,34 +105,47 @@ export async function mark(awaitUnprocessed) {
 				continue;
 			}
 
-			let isNew = true;
-			let isModified = false;
+			let fileStatus = FileStatus.NEW;
 			let trackedTimestamp = trackedFileIds[fileId] ?? null;
 			if (trackedTimestamp !== null) {
+				// Definitely downloaded, but was it modified since?
+				let modifiedDate = new Date(
+					modifiedTime.getAttribute("datetime")
+				);
 				let trackedDate = new Date(trackedTimestamp);
-				isNew = false;
-				isModified = modifiedDate > trackedDate;
+				let isModified = modifiedDate > trackedDate;
+
+				fileStatus = isModified
+					? FileStatus.DOWNLOADED_MODIFIED
+					: FileStatus.DOWNLOADED;
 			}
 
 			resetStyle(nameHolder);
 			resetStyle(createdTime);
 			resetStyle(modifiedTime);
-
-			if (isNew || isModified) {
-				nameHolder.style.color = COLOUR_HIGHLIGHT;
-
-				if (isNew) {
-					createdTime.style.color = COLOUR_HIGHLIGHT;
-
+			switch (fileStatus) {
+				case FileStatus.NEW:
+					nameHolder.style.color = COLOUR_HIGHLIGHT;
 					nameHolder.style["font-weight"] = "bolder";
-					createdTime.style["font-weight"] = "bolder";
-				} else modifiedTime.style.color = COLOUR_HIGHLIGHT;
-			} else {
-				nameHolder.style.color = COLOUR_DULL;
-				nameHolder.style["font-style"] = "italic";
 
-				modifiedTime.style.color = COLOUR_DULL;
-				modifiedTime.style["font-style"] = "italic";
+					createdTime.style.color = COLOUR_HIGHLIGHT;
+					createdTime.style["font-weight"] = "bolder";
+
+					break;
+				case FileStatus.DOWNLOADED_MODIFIED:
+					nameHolder.style.color = COLOUR_HIGHLIGHT;
+
+					modifiedTime.style.color = COLOUR_HIGHLIGHT;
+
+					break;
+				case FileStatus.DOWNLOADED:
+					nameHolder.style.color = COLOUR_DULL;
+					nameHolder.style["font-style"] = "italic";
+
+					modifiedTime.style.color = COLOUR_DULL;
+					modifiedTime.style["font-style"] = "italic";
+
+					break;
 			}
 		}
 	}
