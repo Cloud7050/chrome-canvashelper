@@ -68,7 +68,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 			l(`From course ${courseId}, downloading files as zip: ${fileIds}`);
 			await rememberDownloadFiles(courseId, fileIds);
 		}
-		if (folderIds !== 0) {
+		if (folderIds.length !== 0) {
 			l(`From course ${courseId}, downloading folders as zip: ${folderIds}`);
 			//NOTE See TODOs for current limitation
 		}
