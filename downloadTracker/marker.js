@@ -107,7 +107,7 @@ export async function mark(awaitUnprocessed) {
 			}
 
 			let isNew = true;
-			let isModified = true;
+			let isModified = false;
 			let trackedTimestamp = trackedFileIds[fileId] ?? null;
 			if (trackedTimestamp !== null) {
 				let trackedDate = new Date(trackedTimestamp);

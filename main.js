@@ -90,8 +90,8 @@ chrome.tabs.onUpdated.addListener(
 		// Tab link changed immediately. This may or may not involve web navigation.
 		// • If it doesn't (eg clicking a folder in the sidebar, back/forward cache), marking only
 		// fires here
-		// • If it does (eg clicking a folder row, entering a different link), marking will also
-		// fire in chrome.webNavigation at around the same time
+		// • If it does (eg clicking a folder row, back/forward without cache, entering a different
+		// link), marking will also fire in chrome.webNavigation at around the same time
 
 		// There is a delay after the link changes, before the rows actually get replaced. Need to
 		// ignore processed rows, and wait to mark only unprocessed ones
