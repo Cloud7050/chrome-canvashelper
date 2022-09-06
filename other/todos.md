@@ -2,9 +2,9 @@
 
 ## Short-Term TODOs
 
-- Toggle for which storage to use
+- React
+- Move delete all from context menu into popup, w/ confirmation
 - Mark current folder as part of popup, context-dependent
-- Confirmation to delete all
 - Set up dynamic Canvas URL
 - Context menu in multiple appropriate places with similar options as popup. Refactor with page checker utils, context menu class + context menu manager
 

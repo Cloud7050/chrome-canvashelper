@@ -3,12 +3,16 @@ import { ID_FORGET_DOWNLOADS } from "./constants.js";
 import { URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./downloadTracker/constants.js";
 import { clearDownloads, rememberDownloadFile, rememberDownloadFiles } from "./downloadTracker/storage.js";
 import { extractCourseId, extractFileId, isCanvas, markAllTabs, markIfFilesPage } from "./downloadTracker/utilities.js";
-import { d, l } from "./utilities.js";
+import { d, l, refreshBadge } from "./utilities.js";
 
 
 
 /* [Main] */
 l("☁️");
+refreshBadge();
+
+// Download Tracker: Extension start
+markAllTabs();
 
 // Download Tracker: Context menus
 chrome.runtime.onInstalled.addListener(() => {
@@ -76,9 +80,6 @@ chrome.webRequest.onBeforeRequest.addListener(
 	},
 	["requestBody"]
 );
-
-// Download Tracker: Extension start
-markAllTabs();
 
 // Download Tracker: Page change
 chrome.tabs.onUpdated.addListener(

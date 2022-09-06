@@ -1,14 +1,16 @@
 /* [Imports] */
-import { KEY_DOWNLOADS, KEY_DOWNLOADS_DEV } from "./constants.js";
-import { d, isDevMode } from "../utilities.js";
+import { KEY_DEV_STORAGE } from "../constants.js";
 import { clear, get, set } from "../storageSync.js";
+import { d } from "../utilities.js";
+import { KEY_DOWNLOADS, KEY_DOWNLOADS_DEV } from "./constants.js";
 import { getTimestamp } from "./utilities.js";
 
 
 
 /* [Main] */
-function getKey() {
-	return isDevMode() ? KEY_DOWNLOADS_DEV : KEY_DOWNLOADS;
+async function getKey() {
+	let isDevStorage = await get(KEY_DEV_STORAGE);
+	return isDevStorage ? KEY_DOWNLOADS_DEV : KEY_DOWNLOADS;
 }
 
 
@@ -16,7 +18,7 @@ function getKey() {
 /* [Exports] */
 export async function getDownloads(initialiseCourseId = null) {
 	let downloads = await get(
-		getKey()
+		await getKey()
 	);
 	if (initialiseCourseId !== null) {
 		downloads[initialiseCourseId] = downloads[initialiseCourseId] ?? {};
@@ -37,13 +39,13 @@ export async function rememberDownloadFiles(courseId, fileIds) {
 
 	d(downloads);
 	return set(
-		getKey(),
+		await getKey(),
 		downloads
 	);
 }
 
-export function clearDownloads() {
+export async function clearDownloads() {
 	return clear(
-		getKey()
+		await getKey()
 	);
 }
