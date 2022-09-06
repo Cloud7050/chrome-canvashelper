@@ -1,5 +1,6 @@
 /* [Imports] */
 import { KEY_DEV_STORAGE } from "../constants.js";
+import { clearDownloads } from "../downloadTracker/storage.js";
 import { markAllTabs } from "../downloadTracker/utilities.js";
 import { get, set } from "../storageSync.js";
 import { refreshBadge } from "../utilities.js";
@@ -8,6 +9,7 @@ import { refreshBadge } from "../utilities.js";
 
 /* [Main] */
 let devStorageCheckbox = document.querySelector("#devStorage");
+let clearDownloadsButton = document.querySelector("#clearDownloads");
 
 get(KEY_DEV_STORAGE)
 	.then(
@@ -24,6 +26,14 @@ devStorageCheckbox.addEventListener(
 			devStorageCheckbox.checked
 		);
 		refreshBadge();
+
+		markAllTabs();
+	}
+);
+clearDownloadsButton.addEventListener(
+	"click",
+	async (_mouseEvent) => {
+		await clearDownloads();
 
 		markAllTabs();
 	}

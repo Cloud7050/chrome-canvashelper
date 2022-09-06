@@ -3,7 +3,7 @@
 ## Short-Term TODOs
 
 - React
-- Move delete all from context menu into popup, w/ confirmation
+- Skip modal when in dev storage?
 - Mark current folder as part of popup, context-dependent
 - Set up dynamic Canvas URL
 - Context menu in multiple appropriate places with similar options as popup. Refactor with page checker utils, context menu class + context menu manager
