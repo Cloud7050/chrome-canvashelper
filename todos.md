@@ -2,9 +2,8 @@
 
 ## Short-Term TODOs
 
-- Context menu in multiple appropriate places with similar options as popup. Context menu class + context menu manager
-- Mark current folder as part of popup, context-dependent
-- Set up dynamic Canvas URL
+- Mark current folder as downloaded, as conditional context menu + popup button
+- Get Canvas URL dynamically with NUS as ?? default. Settable in popup based on real storage value, w/ hint (and mark/check all again when changed)
 
 ## Ideas
 
@@ -30,4 +29,8 @@
 
 ## Short-Term TODOs
 
-- Integrate, adapt storage, edit logs
+- Context menu class + context menu manager?
+- Conditional context menu (extractor)
+- Extractor/importer, adapt storage w/ quizId to match, edit logs
+- Conditional context menu (importer)
+- Conditional popup buttons
