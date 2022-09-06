@@ -1,7 +1,6 @@
 /* [Imports] */
-import { ID_FORGET_DOWNLOADS } from "./constants.js";
 import { URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./downloadTracker/constants.js";
-import { clearDownloads, rememberDownloadFile, rememberDownloadFiles } from "./downloadTracker/storage.js";
+import { rememberDownloadFile, rememberDownloadFiles } from "./downloadTracker/storage.js";
 import { extractCourseId, extractFileId, isCanvas, markAllTabs, markIfFilesPage } from "./downloadTracker/utilities.js";
 import { d, l, refreshBadge } from "./utilities.js";
 
@@ -13,24 +12,6 @@ refreshBadge();
 
 // Download Tracker: Extension start
 markAllTabs();
-
-// Download Tracker: Context menus
-chrome.runtime.onInstalled.addListener(() => {
-	chrome.contextMenus.create({
-		id: ID_FORGET_DOWNLOADS,
-		title: "🗑️ Forget all tracked downloads",
-		contexts: ["action"]
-	});
-});
-chrome.contextMenus.onClicked.addListener(async (info, _tab) => {
-	let id = info.menuItemId;
-
-	if (id === ID_FORGET_DOWNLOADS) {
-		await clearDownloads();
-
-		markAllTabs();
-	}
-});
 
 // Download Tracker: Single download
 chrome.webRequest.onBeforeRedirect.addListener(
