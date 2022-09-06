@@ -62,9 +62,11 @@ function Popup() {
 			</div>
 			<div>
 				<button
-					data-bs-target="#clearDownloadsModal"
+					data-bs-target={isDevStorage ? null : "#clearDownloadsModal"}
 					className="btn btn-danger btn-sm"
-					data-bs-toggle="modal"
+					data-bs-toggle={isDevStorage ? null : "modal"}
+
+					onClick={isDevStorage ? clearDownloadsClick : null}
 				>
 					Clear Tracked Downloads
 				</button>
@@ -75,7 +77,7 @@ function Popup() {
 			<div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 				<div className="modal-content">
 					<div className="py-2 modal-body">
-						<b>Forget all downloads</b> that&apos;ve been tracked? Extension will not know which files you&apos;ve already downloaded!
+						Extension will forget all Canvas downloads it has tracked you making so far. Files it thinks you haven&apos;t downloaded will be highlighted as new until you redownload them. Proceed?
 					</div>
 					<div className="p-1 modal-footer">
 						<button
@@ -84,7 +86,7 @@ function Popup() {
 
 							onClick={clearDownloadsClick}
 						>
-							Clear All
+							Delete All
 						</button>
 						<button className="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
 					</div>

@@ -48,9 +48,10 @@ function Popup() {
     htmlFor: "devStorage",
     className: "form-check-label"
   }, "Switch to dev storage"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
-    "data-bs-target": "#clearDownloadsModal",
+    "data-bs-target": isDevStorage ? null : "#clearDownloadsModal",
     className: "btn btn-danger btn-sm",
-    "data-bs-toggle": "modal"
+    "data-bs-toggle": isDevStorage ? null : "modal",
+    onClick: isDevStorage ? clearDownloadsClick : null
   }, "Clear Tracked Downloads"))), /*#__PURE__*/React.createElement("div", {
     id: "clearDownloadsModal",
     className: "modal fade"
@@ -60,13 +61,13 @@ function Popup() {
     className: "modal-content"
   }, /*#__PURE__*/React.createElement("div", {
     className: "py-2 modal-body"
-  }, /*#__PURE__*/React.createElement("b", null, "Forget all downloads"), " that've been tracked? Extension will not know which files you've already downloaded!"), /*#__PURE__*/React.createElement("div", {
+  }, "Extension will forget all Canvas downloads it has tracked you making so far. Files it thinks you haven't downloaded will be highlighted as new until you redownload them. Proceed?"), /*#__PURE__*/React.createElement("div", {
     className: "p-1 modal-footer"
   }, /*#__PURE__*/React.createElement("button", {
     className: "btn btn-danger btn-sm",
     "data-bs-dismiss": "modal",
     onClick: clearDownloadsClick
-  }, "Clear All"), /*#__PURE__*/React.createElement("button", {
+  }, "Delete All"), /*#__PURE__*/React.createElement("button", {
     className: "btn btn-secondary btn-sm",
     "data-bs-dismiss": "modal"
   }, "Cancel"))))));
