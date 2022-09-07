@@ -4,6 +4,7 @@
 
 - Mark current folder as downloaded, as conditional context menu + popup button
 - Get Canvas URL dynamically with NUS as ?? default. Settable in popup based on real storage value, w/ hint (and mark/check all again when changed)
+- Update readme, store page. Update both with multiple images
 
 ## Ideas
 
