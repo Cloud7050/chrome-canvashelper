@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Canvas Little Helper",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Download Tracker & Quiz Transferer for Canvas LMS",
 	"icons": {
 		"16": "/icons/16.png",
