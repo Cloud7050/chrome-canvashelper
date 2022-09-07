@@ -55,21 +55,20 @@ export async function mark(awaitUnprocessed) {
 		}
 
 		l("Observing to mark...");
-		let mutationObserver = new MutationObserver(() => {
+		globalThis.mutationObserver = new MutationObserver(() => {
 			let rows = getRows();
 			if (rows === null) return;
 
 			l("Done observing, marking...");
 			markNow(courseId, rows);
 		});
-		mutationObserver.observe(
+		globalThis.mutationObserver.observe(
 			document.body,
 			{
 				subtree: true,
 				childList: true
 			}
 		);
-		globalThis.mutationObserver = mutationObserver;
 	}
 
 	async function markNow(courseId, rows) {

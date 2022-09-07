@@ -68,20 +68,48 @@ chrome.webRequest.onBeforeRequest.addListener(
 	["requestBody"]
 );
 
+/*
+	Potentially relevant events:
+	1) Tab URL change (subset of loading status)
+	2) Tab complete status
+	3) Outermost DOM loaded
+
+	Marking responses:
+	A) Mark now or await
+	B) Mark or await unprocessed rows (ignore processed, require unprocessed)
+
+	Page changes:
+	• Click sidebar same folder, back/forward cache same folder:
+		• Fires 2
+	• Click sidebar different folder, back/forward cache different folder:
+		• Requires B, fires 1 2
+	• Enter same link, refresh:
+		• Requires A, fires 2 3
+	• Back/forward uncached different folder:
+		• Requires B, fires 1 2 3
+	• Enter different link, middle-click link, click folder row, back/forward uncached different
+	folder:
+		• Requires B, fires 1 2 3
+
+	Therefore:
+	• 2 is unusable as it will cause indefinite waiting for unprocessed rows, when no row change
+	will happen
+	• 1 can handle B
+	• 3 can handle A
+	• In some cases, 1 will fire as B, then 3 will fire as A. Observer is coded to check if already
+	observing, though sometimes both will mark now, or it may even still double observe
+*/
+
 // Download Tracker: Page change
 chrome.tabs.onUpdated.addListener(
 	(tabId, changeInfo, tab) => {
 		if (changeInfo.url === undefined) return;
 
+		// 1: Tab link changed immediately. This may or may not involve web navigation
 		d("Tab link changed");
-		// Tab link changed immediately. This may or may not involve web navigation.
-		// • If it doesn't (eg clicking a folder in the sidebar, back/forward cache), marking only
-		// fires here
-		// • If it does (eg clicking a folder row, back/forward without cache, entering a different
-		// link), marking will also fire in chrome.webNavigation at around the same time
 
-		// There is a delay after the link changes, before the rows actually get replaced. Need to
-		// ignore processed rows, and wait to mark only unprocessed ones
+		// B: There is a delay after the link changes, before the rows actually get replaced. Need
+		// to ignore processed rows, and wait to mark only unprocessed ones
 		markIfFilesPage(tab, true);
 
 		checkForQuiz(tab);
@@ -91,9 +119,10 @@ chrome.webNavigation.onDOMContentLoaded.addListener(
 	(details) => {
 		if (details.frameType !== "outermost_frame") return;
 
+		// 3: (Although 1 may fire before this or at around the same time)
 		d("DOM completed load");
-		// This fires without chrome.tabs firing, eg when refreshing, entering the same link
 
+		// A:
 		markIfFilesPage(details.tabId);
 	}
 );
