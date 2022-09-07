@@ -1,5 +1,7 @@
 # Canvas Little Helper
 
+<small>*Download Tracker & Quiz Transferer for Canvas LMS*</small>
+
 Canvas Little Helper is a Chrome extension that aims to provide convenient bits of automation for Instructure's Canvas LMS.
 
 It is available for [free on the Chrome Web Store](https://chrome.google.com/webstore/detail/canvas-little-helper/phlhcifpndofokoohbieihpifnfbiojn)!
