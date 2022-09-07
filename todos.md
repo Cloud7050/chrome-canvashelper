@@ -19,8 +19,10 @@
 	- Downloaded but modified: Still highlight modified date (newer), modified will be shown as download timestamp would be between created and modified
 	- Downloaded: Instead of always modified, highlight newer (modified, or if hidden then created)
 - Toggle for dates to relative d h m ago
+- Toggle for creation dates to be effective creation timestamp (timed release)
 - First time installation where storage is empty, then go through setup page of Canvas URL, which files are downloaded (or skip)
 - Details on features as built-in page
+- Convenient download button per row as icon
 - Configurable colours
 - Downloaded folders' contents are unknown, only have the folder ID. Need to query the API to get the file IDs at the time of download, and recurse for any further folder IDs within
 - Support course file downloads from alternative locations like My Files
@@ -36,3 +38,7 @@
 - Extractor/importer, adapt storage w/ quizId to match, edit logs
 - Conditional context menu (importer)
 - Conditional popup buttons
+
+# Misc
+
+- Forum unread replies indicator similar to new thread black dot

@@ -22,7 +22,7 @@ checkAllTabs();
 // Download Tracker: Single download
 chrome.webRequest.onBeforeRedirect.addListener(
 	async (details) => {
-		if (!isCanvas(details.initiator)) return;
+		if (!isCanvas(details.url)) return;
 
 		let courseId = await extractCourseId(details.tabId);
 		if (courseId === -1) return;
@@ -42,7 +42,7 @@ chrome.webRequest.onBeforeRedirect.addListener(
 // Download Tracker: Multi download
 chrome.webRequest.onBeforeRequest.addListener(
 	async (details) => {
-		if (!isCanvas(details.initiator)) return;
+		if (!isCanvas(details.url)) return;
 
 		let courseId = await extractCourseId(details.tabId);
 		if (courseId === -1) return;

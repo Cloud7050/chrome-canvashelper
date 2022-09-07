@@ -1,12 +1,16 @@
 /* [Imports] */
-import { REGEX_CANVAS, REGEX_COURSE_ID, REGEX_FILE_ID, REGEX_QUIZ_ID } from "./constants.js";
+import { DOMAIN_NAME, REGEX_COURSE_ID, REGEX_DOMAIN, REGEX_FILE_ID, REGEX_QUIZ_ID } from "./constants.js";
 import { getLink, getTab } from "./utilities.js";
 
 
 
 /* [Exports] */
 export function isCanvas(link) {
-	return REGEX_CANVAS.test(link);
+	let result = REGEX_DOMAIN.exec(link);
+	if (result === null) return false;
+
+	let { domain } = result.groups;
+	return domain === DOMAIN_NAME;
 }
 
 export async function extractCourseId(linkOrTabId) {

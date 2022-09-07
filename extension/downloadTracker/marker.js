@@ -72,10 +72,6 @@ export async function mark(awaitUnprocessed) {
 	}
 
 	async function markNow(courseId, rows) {
-		function resetStyle(element) {
-			element.style = null;
-		}
-
 		if (globalThis.mutationObserver !== undefined) {
 			globalThis.mutationObserver.disconnect();
 			delete globalThis.mutationObserver;
@@ -121,9 +117,9 @@ export async function mark(awaitUnprocessed) {
 					: FileStatus.DOWNLOADED;
 			}
 
-			resetStyle(nameHolder);
-			resetStyle(createdTime);
-			resetStyle(modifiedTime);
+			nameHolder.style = null;
+			createdTime.style = null;
+			modifiedTime.style = null;
 			switch (fileStatus) {
 				case FileStatus.NEW:
 					nameHolder.style.color = COLOUR_HIGHLIGHT;
