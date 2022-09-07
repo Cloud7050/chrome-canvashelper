@@ -9,8 +9,8 @@ export const KEY_DOWNLOADS_DEV = "downloadsDev";
 // [Colours]
 export const COLOUR_CYAN = "#55FFFF";
 
-export const COLOUR_HIGHLIGHT = "var(--ic-brand-global-nav-menu-item__text-color--active)"; // Orange for NUS
-export const COLOUR_DULL = "var(--fOyUs-color)"; // Greyish
+export const COLOUR_HIGHLIGHT = "#EF7C00"; // NUS Canvas lighter orange fill
+export const COLOUR_DULL = "#2D3C45"; // NUS Canvas grey dark font
 
 // [Page/Link Recognition]
 export const DOMAIN_NAME = "canvas.nus.edu.sg";
