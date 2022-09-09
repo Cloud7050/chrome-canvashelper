@@ -5,6 +5,11 @@ import { getDevStorage } from "./storage.js";
 
 
 /* [Exports] */
+export function isDevMode() {
+	let manifest = chrome.runtime.getManifest();
+	return manifest.update_url === undefined;
+}
+
 export function getTab(tabOrId) {
 	if (!Number.isInteger(tabOrId)) return tabOrId;
 

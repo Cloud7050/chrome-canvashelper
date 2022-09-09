@@ -2,7 +2,7 @@
 import { clearDownloads, getDownloads } from "../downloadTracker/storage.js";
 import { notifyDownloadsChanged, onDownloadsChanged } from "../messenger.js";
 import { getDevStorage, getDevTools, setDevStorage, setDevTools } from "../storage.js";
-import { refreshBadge, singularPlural } from "../utilities.js";
+import { isDevMode, refreshBadge, singularPlural } from "../utilities.js";
 /* [Main] */
 
 let downloadsPromise = getDownloads();
@@ -72,6 +72,7 @@ function Popup() {
   }
 
   let isNoneTracked = courseCount === 0 && fileCount === 0;
+  let skipToolsWarning = isDevTools || isDevMode();
   return /*#__PURE__*/React.createElement("div", {
     className: "p-3 bg-dark"
   }, /*#__PURE__*/React.createElement("div", {
@@ -84,12 +85,12 @@ function Popup() {
     className: "form-check form-switch"
   }, /*#__PURE__*/React.createElement("input", {
     id: "devTools",
-    "data-bs-target": isDevTools ? null : "#devToolsModal",
-    "data-bs-toggle": isDevTools ? null : "modal",
+    "data-bs-target": skipToolsWarning ? null : "#devToolsModal",
+    "data-bs-toggle": skipToolsWarning ? null : "modal",
     className: "mt-1-2 form-check-input",
     type: "checkbox",
     checked: isDevTools,
-    onClick: isDevTools ? devToolsClick : null
+    onClick: skipToolsWarning ? devToolsClick : null
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "devTools",
     className: "mb-0 h3 form-check-label"

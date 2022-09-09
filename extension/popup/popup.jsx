@@ -2,7 +2,7 @@
 import { clearDownloads, getDownloads } from "../downloadTracker/storage.js";
 import { notifyDownloadsChanged, onDownloadsChanged } from "../messenger.js";
 import { getDevStorage, getDevTools, setDevStorage, setDevTools } from "../storage.js";
-import { refreshBadge, singularPlural } from "../utilities.js";
+import { isDevMode, refreshBadge, singularPlural } from "../utilities.js";
 
 
 
@@ -88,6 +88,7 @@ function Popup() {
 		courseCount === 0
 		&& fileCount === 0
 	);
+	let skipToolsWarning = isDevTools || isDevMode();
 	return <div className="p-3 bg-dark">
 		<div className="mb-3 p-3 bg-light border border-3 rounded">
 			<h3 className="mb-2">
@@ -112,13 +113,13 @@ function Popup() {
 				<div className="form-check form-switch">
 					<input
 						id="devTools"
-						data-bs-target={isDevTools ? null : "#devToolsModal"}
-						data-bs-toggle={isDevTools ? null : "modal"}
+						data-bs-target={skipToolsWarning ? null : "#devToolsModal"}
+						data-bs-toggle={skipToolsWarning ? null : "modal"}
 						className="mt-1-2 form-check-input"
 						type="checkbox"
 						checked={isDevTools}
 
-						onClick={isDevTools ? devToolsClick : null}
+						onClick={skipToolsWarning ? devToolsClick : null}
 					/>
 					<label
 						htmlFor="devTools"
