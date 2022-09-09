@@ -1,37 +1,74 @@
 /* [Imports] */
 import { KEY_DEV_STORAGE } from "../constants.js";
-import { clearDownloads } from "../downloadTracker/storage.js";
-import { markAllTabs } from "../downloadTracker/utilities.js";
+import { clearDownloads, getDownloads } from "../downloadTracker/storage.js";
+import { notifyDownloadsChanged, onDownloadsChanged } from "../messenger.js";
 import { get, set } from "../storageSync.js";
-import { refreshBadge } from "../utilities.js";
+import { refreshBadge, singularPlural } from "../utilities.js";
 /* [Main] */
 
+let downloadsPromise = getDownloads();
 let isDevStoragePromise = get(KEY_DEV_STORAGE);
 
 function Popup() {
+  let [courseCount, setCourseCount] = React.useState(0);
+  let [fileCount, setFileCount] = React.useState(0);
   let [isDevStorage, setIsDevStorage] = React.useState(false);
+
+  function refreshDownloads(downloads) {
+    let _courseCount = Object.keys(downloads).length;
+    setCourseCount(_courseCount);
+    let _fileCount = 0;
+
+    for (let courseId in downloads) {
+      let trackedFileIds = downloads[courseId];
+      _fileCount += Object.keys(trackedFileIds).length;
+    }
+
+    setFileCount(_fileCount);
+  }
+
+  async function _onDownloadsChanged() {
+    let downloads = await getDownloads();
+    refreshDownloads(downloads);
+  }
+
   React.useEffect(() => {
-    isDevStoragePromise.then(realIsDevStorage => {
-      setIsDevStorage(realIsDevStorage);
-    });
-  }, []);
+    // Initial load
+    downloadsPromise.then(downloads => refreshDownloads(downloads));
+    isDevStoragePromise.then(_isDevStorage => {
+      setIsDevStorage(_isDevStorage);
+    }); // Listener
+
+    onDownloadsChanged(_onDownloadsChanged);
+  }, // Run once on mount, including adding the listener
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  []);
 
   async function devStorageClick(_mouseEvent) {
     isDevStorage = !isDevStorage;
     setIsDevStorage(isDevStorage);
     await set(KEY_DEV_STORAGE, isDevStorage);
     refreshBadge();
-    markAllTabs();
+    notifyDownloadsChanged();
+
+    _onDownloadsChanged();
   }
 
   async function clearDownloadsClick(_mouseEvent) {
     await clearDownloads();
-    markAllTabs();
+    notifyDownloadsChanged();
+
+    _onDownloadsChanged();
   }
 
+  let isNoneTracked = courseCount === 0 && fileCount === 0;
   return /*#__PURE__*/React.createElement("div", {
     className: "p-3 bg-dark"
   }, /*#__PURE__*/React.createElement("div", {
+    className: "mb-3 p-3 bg-light rounded"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "mb-2"
+  }, "Download Tracker"), /*#__PURE__*/React.createElement("div", null, isNoneTracked && /*#__PURE__*/React.createElement("div", null, "Nothing tracked yet. Downloads are tracked as you download course files on Canvas."), !isNoneTracked && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("b", null, fileCount), " ", singularPlural(fileCount, "file", "files"), " currently tracked across ", /*#__PURE__*/React.createElement("b", null, courseCount), " ", singularPlural(courseCount, "course", "courses"), "."))), /*#__PURE__*/React.createElement("div", {
     className: "p-3 bg-light rounded"
   }, /*#__PURE__*/React.createElement("h3", {
     className: "mb-2"

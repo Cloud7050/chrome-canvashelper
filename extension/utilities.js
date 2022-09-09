@@ -32,3 +32,9 @@ export async function refreshBadge() {
 		}
 	);
 }
+
+export function singularPlural(count, singular, plural) {
+	if (count === 1) return singular;
+
+	return plural;
+}

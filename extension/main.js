@@ -3,6 +3,7 @@ import { URL_MULTI_DOWNLOAD, URL_SINGLE_DOWNLOAD } from "./constants.js";
 import { rememberDownloadFile, rememberDownloadFiles } from "./downloadTracker/storage.js";
 import { markAllTabs, markIfFilesPage } from "./downloadTracker/utilities.js";
 import { d, l } from "./logging.js";
+import { notifyDownloadsChanged } from "./messenger.js";
 import { checkAllTabs, checkForQuiz } from "./quizTransferer/utilities.js";
 import { extractCourseId, extractFileId, isCanvas } from "./recogniser.js";
 import { refreshBadge } from "./utilities.js";
@@ -32,7 +33,7 @@ chrome.webRequest.onBeforeRedirect.addListener(
 		l(`From course ${courseId}, downloading single file: ${fileId}`);
 		await rememberDownloadFile(courseId, fileId);
 
-		markAllTabs();
+		notifyDownloadsChanged();
 	},
 	{
 		urls: [URL_SINGLE_DOWNLOAD]
@@ -60,7 +61,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 			//NOTE See TODOs for current limitation
 		}
 
-		markAllTabs();
+		notifyDownloadsChanged();
 	},
 	{
 		urls: [URL_MULTI_DOWNLOAD]

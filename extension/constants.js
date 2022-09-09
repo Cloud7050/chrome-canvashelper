@@ -6,6 +6,9 @@ export const KEY_DEV_STORAGE = "isDevStorage";
 export const KEY_DOWNLOADS = "downloads";
 export const KEY_DOWNLOADS_DEV = "downloadsDev";
 
+// [Messages]
+export const MESSAGE_DOWNLOADS_CHANGED = "downloadsChanged";
+
 // [Colours]
 export const COLOUR_CYAN = "#55FFFF";
 

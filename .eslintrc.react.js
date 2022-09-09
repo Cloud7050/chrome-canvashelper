@@ -11,6 +11,10 @@ module.exports = {
 	},
 
 	"rules": {
+		// [React-Specific Changes]
+		// For neater conditional rendering
+		"operator-linebreak": 0, // Was 1
+
 		// [React Recommended]
 		"react/display-name": 1,
 		"react/jsx-key": 1,

@@ -1,26 +1,56 @@
 /* [Imports] */
 import { KEY_DEV_STORAGE } from "../constants.js";
-import { clearDownloads } from "../downloadTracker/storage.js";
-import { markAllTabs } from "../downloadTracker/utilities.js";
+import { clearDownloads, getDownloads } from "../downloadTracker/storage.js";
+import { notifyDownloadsChanged, onDownloadsChanged } from "../messenger.js";
 import { get, set } from "../storageSync.js";
-import { refreshBadge } from "../utilities.js";
+import { refreshBadge, singularPlural } from "../utilities.js";
 
 
 
 /* [Main] */
+let downloadsPromise = getDownloads();
 let isDevStoragePromise = get(KEY_DEV_STORAGE);
 
 function Popup() {
+	let [courseCount, setCourseCount] = React.useState(0);
+	let [fileCount, setFileCount] = React.useState(0);
+
 	let [isDevStorage, setIsDevStorage] = React.useState(false);
+
+	function refreshDownloads(downloads) {
+		let _courseCount = Object.keys(downloads).length;
+		setCourseCount(_courseCount);
+
+		let _fileCount = 0;
+		for (let courseId in downloads) {
+			let trackedFileIds = downloads[courseId];
+			_fileCount += Object.keys(trackedFileIds).length;
+		}
+		setFileCount(_fileCount);
+	}
+
+	async function _onDownloadsChanged() {
+		let downloads = await getDownloads();
+		refreshDownloads(downloads);
+	}
 
 	React.useEffect(
 		() => {
+			// Initial load
+			downloadsPromise.then(
+				(downloads) => refreshDownloads(downloads)
+			);
 			isDevStoragePromise.then(
-				(realIsDevStorage) => {
-					setIsDevStorage(realIsDevStorage);
+				(_isDevStorage) => {
+					setIsDevStorage(_isDevStorage);
 				}
 			);
+
+			// Listener
+			onDownloadsChanged(_onDownloadsChanged);
 		},
+		// Run once on mount, including adding the listener
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[]
 	);
 
@@ -34,16 +64,40 @@ function Popup() {
 		);
 		refreshBadge();
 
-		markAllTabs();
+		notifyDownloadsChanged();
+		_onDownloadsChanged();
 	}
 
 	async function clearDownloadsClick(_mouseEvent) {
 		await clearDownloads();
 
-		markAllTabs();
+		notifyDownloadsChanged();
+		_onDownloadsChanged();
 	}
 
+	let isNoneTracked = (
+		courseCount === 0
+		&& fileCount === 0
+	);
 	return <div className="p-3 bg-dark">
+		<div className="mb-3 p-3 bg-light rounded">
+			<h3 className="mb-2">
+				Download Tracker
+			</h3>
+			<div>
+				{ isNoneTracked &&
+					<div>
+						Nothing tracked yet. Downloads are tracked as you download course files on Canvas.
+					</div>
+				}
+				{ !isNoneTracked &&
+					<div>
+						<b>{fileCount}</b> {singularPlural(fileCount, "file", "files")} currently tracked across <b>{courseCount}</b> {singularPlural(courseCount, "course", "courses")}.
+					</div>
+				}
+			</div>
+		</div>
+
 		<div className="p-3 bg-light rounded">
 			<h3 className="mb-2">
 				Debug
