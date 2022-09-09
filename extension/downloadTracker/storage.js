@@ -2,7 +2,7 @@
 import { KEY_DOWNLOADS, KEY_DOWNLOADS_DEV } from "../constants.js";
 import { d } from "../logging.js";
 import { getDevStorage } from "../storage.js";
-import { clear, get, set } from "../storageSync.js";
+import { clearSync, getSync, setSync } from "../storageBase.js";
 import { getTimestamp } from "./utilities.js";
 
 
@@ -17,7 +17,7 @@ async function getKey() {
 
 /* [Exports] */
 export async function getDownloads(initialiseCourseId = null) {
-	let downloads = await get(
+	let downloads = await getSync(
 		await getKey()
 	);
 	if (initialiseCourseId !== null) {
@@ -38,14 +38,14 @@ export async function rememberDownloadFiles(courseId, fileIds) {
 	for (let fileId of fileIds) trackedFileIds[fileId] = timestamp;
 
 	d(downloads);
-	return set(
+	return setSync(
 		await getKey(),
 		downloads
 	);
 }
 
 export async function clearDownloads() {
-	return clear(
+	return clearSync(
 		await getKey()
 	);
 }
