@@ -30,7 +30,7 @@ function Popup() {
 		setFileCount(_fileCount);
 	}
 
-	async function _onDownloadsChanged() {
+	async function downloadsChangedListener() {
 		let downloads = await getDownloads();
 		refreshDownloads(downloads);
 	}
@@ -53,7 +53,7 @@ function Popup() {
 			);
 
 			// Listener
-			onDownloadsChanged(_onDownloadsChanged);
+			onDownloadsChanged(downloadsChangedListener);
 		},
 		// Run once on mount, including adding the listener
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,14 +74,14 @@ function Popup() {
 		refreshBadge();
 
 		notifyDownloadsChanged();
-		_onDownloadsChanged();
+		downloadsChangedListener();
 	}
 
 	async function clearDownloadsClick(_mouseEvent) {
 		await clearDownloads();
 
 		notifyDownloadsChanged();
-		_onDownloadsChanged();
+		downloadsChangedListener();
 	}
 
 	let isNoneTracked = (
