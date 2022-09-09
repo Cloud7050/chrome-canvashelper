@@ -1,6 +1,7 @@
 /* [Exports] */
 
 // [Storage Keys]
+export const KEY_DEV_TOOLS = "isDevTools";
 export const KEY_DEV_STORAGE = "isDevStorage";
 
 export const KEY_DOWNLOADS = "downloads";

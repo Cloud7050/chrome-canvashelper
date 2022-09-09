@@ -1,19 +1,21 @@
 /* [Imports] */
 import { clearDownloads, getDownloads } from "../downloadTracker/storage.js";
 import { notifyDownloadsChanged, onDownloadsChanged } from "../messenger.js";
-import { getDevStorage, setDevStorage } from "../storage.js";
+import { getDevStorage, getDevTools, setDevStorage, setDevTools } from "../storage.js";
 import { refreshBadge, singularPlural } from "../utilities.js";
 
 
 
 /* [Main] */
 let downloadsPromise = getDownloads();
+let isDevToolsPromise = getDevTools();
 let isDevStoragePromise = getDevStorage();
 
 function Popup() {
 	let [courseCount, setCourseCount] = React.useState(0);
 	let [fileCount, setFileCount] = React.useState(0);
 
+	let [isDevTools, setStateDevTools] = React.useState(false);
 	let [isDevStorage, setStateDevStorage] = React.useState(false);
 
 	function refreshDownloads(downloads) {
@@ -39,6 +41,11 @@ function Popup() {
 			downloadsPromise.then(
 				(downloads) => refreshDownloads(downloads)
 			);
+			isDevToolsPromise.then(
+				(_isDevTools) => {
+					setStateDevTools(_isDevTools);
+				}
+			);
 			isDevStoragePromise.then(
 				(_isDevStorage) => {
 					setStateDevStorage(_isDevStorage);
@@ -52,6 +59,12 @@ function Popup() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[]
 	);
+
+	function devToolsClick(_mouseEvent) {
+		isDevTools = !isDevTools;
+		setStateDevTools(isDevTools);
+		setDevTools(isDevTools);
+	}
 
 	async function devStorageClick(_mouseEvent) {
 		isDevStorage = !isDevStorage;
@@ -76,7 +89,7 @@ function Popup() {
 		&& fileCount === 0
 	);
 	return <div className="p-3 bg-dark">
-		<div className="mb-3 p-3 bg-light rounded">
+		<div className="mb-3 p-3 bg-light border border-3 rounded">
 			<h3 className="mb-2">
 				Download Tracker
 			</h3>
@@ -94,32 +107,76 @@ function Popup() {
 			</div>
 		</div>
 
-		<div className="p-3 bg-light rounded">
-			<h3 className="mb-2">
-				Debug
-			</h3>
-			<div className="mb-2">
+		<div className={`p-3 bg-light border border-3 rounded ${isDevTools ? "border-warning" : ""}`}>
+			<div>
 				<div className="form-check form-switch">
 					<input
-						className="form-check-input"
+						id="devTools"
+						data-bs-target={isDevTools ? null : "#devToolsModal"}
+						data-bs-toggle={isDevTools ? null : "modal"}
+						className="mt-1-2 form-check-input"
 						type="checkbox"
-						checked={isDevStorage}
+						checked={isDevTools}
 
-						onClick={devStorageClick}
+						onClick={isDevTools ? devToolsClick : null}
 					/>
-					<label htmlFor="devStorage" className="form-check-label">Switch to dev storage</label>
+					<label
+						htmlFor="devTools"
+						className="mb-0 h3 form-check-label"
+					>
+						Dev Tools
+					</label>
 				</div>
 			</div>
-			<div>
-				<button
-					data-bs-target={isDevStorage ? null : "#clearDownloadsModal"}
-					data-bs-toggle={isDevStorage ? null : "modal"}
-					className="btn btn-danger btn-sm"
+			{ isDevTools &&
+				<>
+					<hr className="my-2" />
+					<div className="mb-2">
+						<div className="form-check form-switch">
+							<input
+								id="devStorage"
+								className="form-check-input"
+								type="checkbox"
+								checked={isDevStorage}
 
-					onClick={isDevStorage ? clearDownloadsClick : null}
-				>
-					Clear Tracked Downloads
-				</button>
+								onClick={devStorageClick}
+							/>
+							<label htmlFor="devStorage" className="form-check-label">Switch to dev storage</label>
+						</div>
+					</div>
+					<div>
+						<button
+							data-bs-target={isDevStorage ? null : "#clearDownloadsModal"}
+							data-bs-toggle={isDevStorage ? null : "modal"}
+							className="btn btn-danger btn-sm"
+
+							onClick={isDevStorage ? clearDownloadsClick : null}
+						>
+							Clear Tracked Downloads
+						</button>
+					</div>
+				</>
+			}
+		</div>
+
+		<div id="devToolsModal" className="modal fade">
+			<div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+				<div className="modal-content">
+					<div className="py-2 modal-body">
+						Dev tools are more for development purposes. Messing with them if you aren&apos;t sure what they do may irreversibly damage existing data and impact functionality! Are you sure you want to enable dev tools?
+					</div>
+					<div className="p-1 modal-footer">
+						<button
+							className="btn btn-warning btn-sm"
+							data-bs-dismiss="modal"
+
+							onClick={devToolsClick}
+						>
+							Enable
+						</button>
+						<button className="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+					</div>
+				</div>
 			</div>
 		</div>
 
