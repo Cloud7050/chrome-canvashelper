@@ -1,18 +1,17 @@
 /* [Imports] */
-import { KEY_DEV_STORAGE } from "../constants.js";
 import { clearDownloads, getDownloads } from "../downloadTracker/storage.js";
 import { notifyDownloadsChanged, onDownloadsChanged } from "../messenger.js";
-import { get, set } from "../storageSync.js";
+import { getDevStorage, setDevStorage } from "../storage.js";
 import { refreshBadge, singularPlural } from "../utilities.js";
 /* [Main] */
 
 let downloadsPromise = getDownloads();
-let isDevStoragePromise = get(KEY_DEV_STORAGE);
+let isDevStoragePromise = getDevStorage();
 
 function Popup() {
   let [courseCount, setCourseCount] = React.useState(0);
   let [fileCount, setFileCount] = React.useState(0);
-  let [isDevStorage, setIsDevStorage] = React.useState(false);
+  let [isDevStorage, setStateDevStorage] = React.useState(false);
 
   function refreshDownloads(downloads) {
     let _courseCount = Object.keys(downloads).length;
@@ -36,7 +35,7 @@ function Popup() {
     // Initial load
     downloadsPromise.then(downloads => refreshDownloads(downloads));
     isDevStoragePromise.then(_isDevStorage => {
-      setIsDevStorage(_isDevStorage);
+      setStateDevStorage(_isDevStorage);
     }); // Listener
 
     onDownloadsChanged(_onDownloadsChanged);
@@ -46,8 +45,8 @@ function Popup() {
 
   async function devStorageClick(_mouseEvent) {
     isDevStorage = !isDevStorage;
-    setIsDevStorage(isDevStorage);
-    await set(KEY_DEV_STORAGE, isDevStorage);
+    setStateDevStorage(isDevStorage);
+    await setDevStorage(isDevStorage);
     refreshBadge();
     notifyDownloadsChanged();
 
@@ -68,7 +67,7 @@ function Popup() {
     className: "mb-3 p-3 bg-light rounded"
   }, /*#__PURE__*/React.createElement("h3", {
     className: "mb-2"
-  }, "Download Tracker"), /*#__PURE__*/React.createElement("div", null, isNoneTracked && /*#__PURE__*/React.createElement("div", null, "Nothing tracked yet. Downloads are tracked as you download course files on Canvas."), !isNoneTracked && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("b", null, fileCount), " ", singularPlural(fileCount, "file", "files"), " currently tracked across ", /*#__PURE__*/React.createElement("b", null, courseCount), " ", singularPlural(courseCount, "course", "courses"), "."))), /*#__PURE__*/React.createElement("div", {
+  }, "Download Tracker"), /*#__PURE__*/React.createElement("div", null, isNoneTracked && /*#__PURE__*/React.createElement(React.Fragment, null, "Nothing tracked yet. Downloads are tracked as you download course files on Canvas."), !isNoneTracked && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("b", null, fileCount), " ", singularPlural(fileCount, "file", "files"), " currently tracked across ", /*#__PURE__*/React.createElement("b", null, courseCount), " ", singularPlural(courseCount, "course", "courses"), "."))), /*#__PURE__*/React.createElement("div", {
     className: "p-3 bg-light rounded"
   }, /*#__PURE__*/React.createElement("h3", {
     className: "mb-2"

@@ -1,6 +1,7 @@
 /* [Imports] */
-import { KEY_DEV_STORAGE, KEY_DOWNLOADS, KEY_DOWNLOADS_DEV } from "../constants.js";
+import { KEY_DOWNLOADS, KEY_DOWNLOADS_DEV } from "../constants.js";
 import { d } from "../logging.js";
+import { getDevStorage } from "../storage.js";
 import { clear, get, set } from "../storageSync.js";
 import { getTimestamp } from "./utilities.js";
 
@@ -8,7 +9,7 @@ import { getTimestamp } from "./utilities.js";
 
 /* [Main] */
 async function getKey() {
-	let isDevStorage = await get(KEY_DEV_STORAGE);
+	let isDevStorage = await getDevStorage();
 	return isDevStorage ? KEY_DOWNLOADS_DEV : KEY_DOWNLOADS;
 }
 

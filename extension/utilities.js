@@ -1,6 +1,6 @@
 /* [Imports] */
-import { COLOUR_CYAN, KEY_DEV_STORAGE } from "./constants.js";
-import { get } from "./storageSync.js";
+import { COLOUR_CYAN } from "./constants.js";
+import { getDevStorage } from "./storage.js";
 
 
 
@@ -19,7 +19,7 @@ export async function getLink(linkOrTabId) {
 }
 
 export async function refreshBadge() {
-	let isDevStorage = await get(KEY_DEV_STORAGE);
+	let isDevStorage = await getDevStorage();
 
 	chrome.action.setBadgeText(
 		{
