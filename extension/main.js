@@ -23,6 +23,8 @@ checkAllTabs();
 // Download Tracker: Single download
 chrome.webRequest.onBeforeRedirect.addListener(
 	async (details) => {
+		d(details);
+
 		if (!isCanvas(details.url)) return;
 
 		let courseId = await extractCourseId(details.tabId);
@@ -43,6 +45,8 @@ chrome.webRequest.onBeforeRedirect.addListener(
 // Download Tracker: Multi download
 chrome.webRequest.onBeforeRequest.addListener(
 	async (details) => {
+		d(details);
+
 		if (!isCanvas(details.url)) return;
 
 		let courseId = await extractCourseId(details.tabId);
@@ -104,10 +108,12 @@ chrome.webRequest.onBeforeRequest.addListener(
 // Download Tracker: Page change
 chrome.tabs.onUpdated.addListener(
 	(tabId, changeInfo, tab) => {
+		d(changeInfo);
+
 		if (changeInfo.url === undefined) return;
 
 		// 1: Tab link changed immediately. This may or may not involve web navigation
-		d("Tab link changed");
+		l("Tab link changed");
 
 		// B: There is a delay after the link changes, before the rows actually get replaced. Need
 		// to ignore processed rows, and wait to mark only unprocessed ones
@@ -118,10 +124,12 @@ chrome.tabs.onUpdated.addListener(
 );
 chrome.webNavigation.onDOMContentLoaded.addListener(
 	(details) => {
+		d(details);
+
 		if (details.frameType !== "outermost_frame") return;
 
 		// 3: (Although 1 may fire before this or at around the same time)
-		d("DOM completed load");
+		l("DOM completed load");
 
 		// A:
 		markIfFilesPage(details.tabId);
