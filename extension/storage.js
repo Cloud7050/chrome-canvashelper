@@ -6,7 +6,7 @@ import { getLocal, setLocal } from "./storageBase.js";
 
 /* [Exports] */
 export function getDevTools() {
-	return getLocal(KEY_DEV_TOOLS);
+	return getLocal(KEY_DEV_TOOLS, false);
 }
 
 export function setDevTools(isDevTools) {
@@ -14,7 +14,7 @@ export function setDevTools(isDevTools) {
 }
 
 export function getDevStorage() {
-	return getLocal(KEY_DEV_STORAGE);
+	return getLocal(KEY_DEV_STORAGE, false);
 }
 
 export function setDevStorage(isDevStorage) {
