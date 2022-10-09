@@ -41,4 +41,6 @@
 
 # Misc
 
+- Split into Components
+- Concurrent local unpacked mode
 - Forum unread replies indicator similar to new thread black dot
